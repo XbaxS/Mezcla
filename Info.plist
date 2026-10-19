@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+<key>CFBundleExecutable</key><string>Mezcla</string>
+<key>CFBundleIdentifier</key><string>cl.mezcla.audio</string>
+<key>CFBundleName</key><string>Mezcla</string>
+<key>CFBundleDisplayName</key><string>Mezcla</string>
+<key>CFBundleIconFile</key><string>AppIcon</string>
+<key>CFBundlePackageType</key><string>APPL</string>
+<key>CFBundleShortVersionString</key><string>0.2.0</string>
+<key>CFBundleVersion</key><string>2</string>
+<key>LSMinimumSystemVersion</key><string>14.4</string>
+<key>LSUIElement</key><true/>
+<key>NSHighResolutionCapable</key><true/>
+<key>NSAudioCaptureUsageDescription</key><string>Mezcla necesita acceder al audio de las aplicaciones para ajustar su volumen y enviarlo a la salida que elijas. El audio se procesa en tu Mac, sin grabarlo ni enviarlo a internet.</string>
+</dict></plist>

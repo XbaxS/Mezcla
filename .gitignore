@@ -1,0 +1,14 @@
+.DS_Store
+._*
+.build/
+build/
+DerivedData/
+*.app/
+*.dSYM/
+*.zip
+*.o
+*.pcm
+*.pch
+.env
+.env.*
+!.env.example
