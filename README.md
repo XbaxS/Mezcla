@@ -1,10 +1,17 @@
-# Mezcla · 0.3.0
+# Mezcla · 0.4.0
 
 App nativa para macOS que permite controlar el volumen, silenciar y elegir la salida de audio de cada aplicación desde la barra de menú. Esta primera versión está compilada para Apple Silicon y fue probada en macOS Tahoe 26.6.2.
 
 ## Descargar
 
-La versión de prueba está disponible en [Releases](https://github.com/XbaxS/Mezcla/releases). Descarga `Mezcla-0.3.0.zip`, descomprímelo y abre la aplicación. Requiere un Mac con Apple Silicon y macOS 14.4 o posterior. La app tiene firma local y no está notarizada por Apple.
+La versión de prueba está disponible en [Releases](https://github.com/XbaxS/Mezcla/releases). Descarga `Mezcla-0.4.0.zip`, descomprímelo y abre la aplicación. Requiere un Mac con Apple Silicon y macOS 14.4 o posterior. La app tiene firma local y no está notarizada por Apple.
+
+## Novedades de 0.4.0
+
+- Interfaz rediseñada con fondo azul oscuro, superficies grises y acentos naranjas, usando la paleta Drumline / Concrete: `#111827`, `#374151`, `#9CA3AF`, `#F97316` y `#F3F4F6`.
+- Tarjetas diferenciadas para salidas y aplicaciones, porcentajes más visibles y estados más breves.
+- Tema oscuro consistente en la ventana y el panel de la barra de menú. Se conservan los controles nativos, la navegación por teclado y los ajustes de audio existentes.
+- Botones de silencio con nombres accesibles para cada aplicación y salida; el selector de salida identifica también la aplicación.
 
 ## Novedades de 0.3.0
 

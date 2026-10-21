@@ -13,15 +13,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem.button?.target = self
         statusItem.button?.action = #selector(togglePopover)
         popover = NSPopover()
+        popover.appearance = NSAppearance(named: .darkAqua)
         popover.behavior = .transient
-        popover.contentSize = NSSize(width: 440, height: 700)
+        popover.contentSize = NSSize(width: MixerTheme.width, height: MixerTheme.height)
         popover.contentViewController = NSHostingController(rootView: MixerView(model: model))
         showWindow()
     }
     func showWindow() {
         if window == nil {
-            let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 440, height: 700), styleMask: [.titled, .closable, .miniaturizable], backing: .buffered, defer: false)
+            let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: MixerTheme.width, height: MixerTheme.height), styleMask: [.titled, .closable, .miniaturizable], backing: .buffered, defer: false)
             window.title = "Mezcla"
+            window.appearance = NSAppearance(named: .darkAqua)
+            window.titlebarAppearsTransparent = true
+            window.backgroundColor = NSColor(red: 17 / 255, green: 24 / 255, blue: 39 / 255, alpha: 1)
             window.isReleasedWhenClosed = false
             window.contentViewController = NSHostingController(rootView: MixerView(model: model))
             window.center()
