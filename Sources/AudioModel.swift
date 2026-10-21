@@ -114,10 +114,15 @@ final class MixerModel: ObservableObject {
     @Published var peaks: [String: Float] = [:]
     @Published var enabled = true
     @Published var defaultOutputName = "Salida del sistema"
+    @Published var defaultOutputID: AudioObjectID = 0
+    @Published var outputVolumes: [String: OutputVolumeState] = [:]
+    @Published var outputErrors: [String: String] = [:]
     @Published var running = Set<String>()
     private var routes: [String: LiveRoute] = [:]
     private var discoveryTimer: Timer?
     private var meterTimer: Timer?
+    private var outputTimer: Timer?
+    private let deviceVolume = DeviceVolumeService()
     private var observers: [NSObjectProtocol] = []
     private var asleep = false
     private var refreshing = false
@@ -128,6 +133,7 @@ final class MixerModel: ObservableObject {
         if let data = UserDefaults.standard.data(forKey: "applicationSettings"), let value = try? JSONDecoder().decode([String: AppSettings].self, from: data) { settings = value }
         refresh()
         discoveryTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { [weak self] _ in self?.refresh() }
+        outputTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] _ in self?.refreshOutputVolumes() }
         meterTimer = Timer.scheduledTimer(withTimeInterval: 0.12, repeats: true) { [weak self] _ in
             guard let self else { return }
             self.peaks = self.routes.mapValues { min(1, MZRoutePeak($0.pointer)) }
@@ -146,6 +152,7 @@ final class MixerModel: ObservableObject {
         failedSignatures[id] = nil
         errors[id] = nil
         reconcile()
+        refreshOutputVolumes()
     }
     func toggleEnabled() {
         enabled.toggle()
@@ -154,13 +161,14 @@ final class MixerModel: ObservableObject {
         reconcile()
     }
     func stopRoutes() { routes.removeAll(); running = []; peaks = [:] }
-    func shutdown() { discoveryTimer?.invalidate(); meterTimer?.invalidate(); stopRoutes() }
+    func shutdown() { discoveryTimer?.invalidate(); meterTimer?.invalidate(); outputTimer?.invalidate(); stopRoutes() }
     func refresh() {
         guard !refreshing else { return }
         refreshing = true
         defer { refreshing = false }
         outputs = AudioRead.outputs()
-        defaultOutputName = outputs.first { $0.objectID == AudioRead.defaultOutput }?.name ?? "Sin salida disponible"
+        defaultOutputID = AudioRead.defaultOutput
+        defaultOutputName = outputs.first { $0.objectID == defaultOutputID }?.name ?? "Sin salida disponible"
         let discovered = AudioRead.apps()
         var aliases: [String: Set<String>] = [:]
         for app in discovered {
@@ -174,6 +182,35 @@ final class MixerModel: ObservableObject {
         for app in discovered where app.active { seen.insert(app.id) }
         applications = discovered.filter { seen.contains($0.id) || preference($0.id).controlled }
         reconcile()
+        refreshOutputVolumes()
+    }
+    var visibleOutputs: [OutputDevice] {
+        let selected = Set(applications.compactMap { app -> String? in
+            let value = preference(app.id)
+            return value.controlled ? value.output : nil
+        })
+        return outputs.filter { $0.objectID == defaultOutputID || selected.contains($0.id) }
+    }
+    func refreshOutputVolumes() {
+        guard !asleep else { return }
+        outputVolumes = Dictionary(uniqueKeysWithValues: visibleOutputs.map { output in
+            (output.id, deviceVolume.state(VolumeTarget(objectID: output.objectID, uid: output.id)))
+        })
+    }
+    func setOutputVolume(_ output: OutputDevice, volume: Float) {
+        do {
+            try deviceVolume.setVolume(volume, target: VolumeTarget(objectID: output.objectID, uid: output.id))
+            outputErrors[output.id] = nil
+        } catch { outputErrors[output.id] = error.localizedDescription }
+        refreshOutputVolumes()
+    }
+    func toggleOutputMute(_ output: OutputDevice) {
+        let target = VolumeTarget(objectID: output.objectID, uid: output.id)
+        do {
+            try deviceVolume.setMuted(!(deviceVolume.state(target).muted ?? false), target: target)
+            outputErrors[output.id] = nil
+        } catch { outputErrors[output.id] = error.localizedDescription }
+        refreshOutputVolumes()
     }
     private func reconcile() {
         guard enabled, !asleep else { stopRoutes(); return }

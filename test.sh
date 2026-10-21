@@ -8,3 +8,5 @@ xcrun clang -fobjc-arc -O2 -mmacosx-version-min=14.4 "$project_dir/Tests/AudioTe
 "$build_dir/audio-tests"
 xcrun swiftc -swift-version 5 -module-cache-path "$build_dir/swift-cache" "$project_dir/Sources/AppIdentity.swift" "$project_dir/Tests/IdentityTests.swift" -o "$build_dir/identity-tests"
 "$build_dir/identity-tests"
+xcrun swiftc -swift-version 5 -module-cache-path "$build_dir/swift-cache" "$project_dir/Sources/DeviceVolume.swift" "$project_dir/Tests/DeviceVolumeTests.swift" -framework CoreAudio -o "$build_dir/device-volume-tests"
+"$build_dir/device-volume-tests"

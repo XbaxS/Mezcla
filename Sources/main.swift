@@ -14,13 +14,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem.button?.action = #selector(togglePopover)
         popover = NSPopover()
         popover.behavior = .transient
-        popover.contentSize = NSSize(width: 440, height: 620)
+        popover.contentSize = NSSize(width: 440, height: 700)
         popover.contentViewController = NSHostingController(rootView: MixerView(model: model))
         showWindow()
     }
     func showWindow() {
         if window == nil {
-            let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 440, height: 620), styleMask: [.titled, .closable, .miniaturizable], backing: .buffered, defer: false)
+            let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 440, height: 700), styleMask: [.titled, .closable, .miniaturizable], backing: .buffered, defer: false)
             window.title = "Mezcla"
             window.isReleasedWhenClosed = false
             window.contentViewController = NSHostingController(rootView: MixerView(model: model))
